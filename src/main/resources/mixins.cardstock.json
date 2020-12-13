@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "space.bbkr.cardstock.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ExtraCursedMixinStaticContent"
+  ],
+  "client": [
+    "MixinScreen"
+  ]
+}

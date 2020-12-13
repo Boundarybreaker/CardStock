@@ -1,0 +1,15 @@
+{
+  "emblem": "cardstock:textures/gui/sample_emblem.png",
+  "cards": {
+    "sample_common": {
+      "rarity": 3,
+      "info": { "text": "5/5 Blue Kittey", "color": "aqua" },
+      "lore": [
+        [ { "text": "Rye is a ", "color": "gray" }, { "text": "pretty kitty", "color": "aqua" }, { "text": ",", "color": "gray" } ],
+        { "text":"and everyone knows it!", "color": "gray" }
+      ],
+      "artist": "Kat",
+      "date": "2020"
+    }
+  }
+}

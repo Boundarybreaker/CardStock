@@ -1,0 +1,15 @@
+{
+  "set": "cardstock:sample_set",
+  "cards": 10,
+  "weights": {
+    "5": 1,
+    "4": 5,
+    "3": 10,
+    "2": 20,
+    "1": 50
+  },
+  "bonuses": {
+    "5": 1,
+    "sample_common": 0.25
+  }
+}
