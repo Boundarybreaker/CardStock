@@ -4,16 +4,19 @@
   "version": "${version}",
 
   "name": "Card Stock",
-  "icon": "assets/starter/icon.png",
+  "icon": "assets/cardstock/icon.png",
   "description": "Data-driven trading cards for Fabric",
   "license": "MIT",
   "contact": {
-    "sources": "https://github.com/Boundarybreaker/FabrCardStockicStarter"
+    "sources": "https://github.com/Boundarybreaker/CardStock"
   },
   "environment": "*",
   "entrypoints": {
     "main": [
       "space.bbkr.cardstock.CardStock"
+    ],
+    "client": [
+      "space.bbkr.cardstock.client.CardStockClient"
     ]
   },
   "mixins": [

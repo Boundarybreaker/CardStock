@@ -5,18 +5,18 @@ import net.minecraft.util.Rarity;
 
 import java.util.List;
 
-public class CardData {
+public class Card {
 	private final int rarity;
 	private final Text info;
 	private final List<Text> lore;
 	private final String author;
 	private final String date;
 
-	public CardData(int rarity, Text info, List<Text> lore, String author, String date) {
+	public Card(int rarity, Text info, List<Text> lore, String artist, String date) {
 		this.rarity = rarity;
 		this.info = info;
 		this.lore = lore;
-		this.author = author;
+		this.author = artist;
 		this.date = date;
 	}
 

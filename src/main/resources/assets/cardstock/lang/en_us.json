@@ -1,4 +1,5 @@
 {
+  "text.cardstock.artist": "Artwork © %s %s",
   "text.cardstock.more": "Press §aSHIFT§r for more",
-  "text.cardstock.source": "Artwork © %s %s"
+  "text.cardstock.source": "Powered by CardStock"
 }
