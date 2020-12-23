@@ -1,5 +1,6 @@
 package space.bbkr.cardstock.item;
 
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
@@ -27,43 +28,37 @@ public class CardItem extends Item {
 		super(settings);
 	}
 
-	public Card getCard(ItemStack stack) {
-		return CardManager.INSTANCE.getCard(new Identifier(stack.getOrCreateTag().getString("Card")));
-	}
-
-	public CardSet getSet(ItemStack stack) {
-		String cardId = stack.getOrCreateTag().getString("Card");
-		return CardManager.INSTANCE.getSet(new Identifier(cardId.substring(0, cardId.lastIndexOf('/'))));
-	}
-
 	@Override
 	public Rarity getRarity(ItemStack stack) {
-		return getCard(stack).getItemRarity();
+		return CardManager.INSTANCE.getCard(stack).getItemRarity();
 	}
 
 	@Override
 	public boolean hasGlint(ItemStack stack) {
-		return getCard(stack).getRarity() == 5;
+		return CardManager.INSTANCE.getCard(stack).getRarity() == 5;
 	}
 
 	@Override
 	public Text getName(ItemStack stack) {
-		return new TranslatableText("card." + stack.getOrCreateTag().getString("Card")
-				.replace(':', '.')
-				.replace('/', '.')
-		);
+		if (stack.hasTag() && stack.getOrCreateTag().contains("Card", NbtType.STRING)) {
+			return new TranslatableText("card." + stack.getOrCreateTag().getString("Card")
+					.replace(':', '.')
+					.replace('/', '.')
+			);
+		}
+		return super.getName(stack);
 	}
 
 	@Override
 	public Optional<TooltipData> getTooltipData(ItemStack stack) {
-		return Optional.of(new CardComponent(this, stack));
+		return Optional.of(new CardComponent(stack));
 	}
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
 		super.appendTooltip(stack, world, tooltip, context);
 		tooltip.add(new LiteralText(""));
-		Card card = getCard(stack);
+		Card card = CardManager.INSTANCE.getCard(stack);
 		if (!card.toString().equals("")) tooltip.add(card.getInfo());
 		if (Screen.hasShiftDown()) {
 			for (Text line : card.getLore()) {

@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.JsonDataLoader;
@@ -14,6 +15,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
@@ -26,13 +28,23 @@ public class CardManager extends JsonDataLoader implements IdentifiableResourceR
 
 	private final Map<Identifier, CardSet> sets = new HashMap<>();
 
+	private final Card defaultMissingno;
+	private final CardSet defaultMissingnoSet;
+
 	public CardManager() {
 		super(new GsonBuilder().setPrettyPrinting().create(), "cardstock/sets");
+		this.defaultMissingno = new Card(1, new TranslatableText("text.cardstock.missingno"), new ArrayList<>(), "kat", "2020");
+		Map<String, Card> setMap = new HashMap<>();
+		setMap.put("missingno", defaultMissingno);
+		this.defaultMissingnoSet = new CardSet(new Identifier(CardStock.MODID, "textures/gui/missingno.png"), setMap);
+		sets.put(new Identifier(CardStock.MODID, "missingno"), defaultMissingnoSet);
 	}
 
 	@Override
 	protected void apply(Map<Identifier, JsonElement> loader, ResourceManager manager, Profiler profiler) {
-		int cardCount = 0;
+		sets.clear();
+		sets.put(new Identifier(CardStock.MODID, "missingno"), defaultMissingnoSet);
+		int cardCount = 1;
 		for (Identifier id : loader.keySet()) {
 			JsonElement elem = loader.get(id);
 			JsonObject json = JsonHelper.asObject(elem, "contents of " + id.toString());
@@ -72,13 +84,35 @@ public class CardManager extends JsonDataLoader implements IdentifiableResourceR
 	}
 
 	public CardSet getSet(Identifier id) {
-		return sets.get(id);
+		return sets.getOrDefault(id, defaultMissingnoSet);
 	}
 
 	public Card getCard(Identifier id) {
 		Identifier setId = new Identifier(id.getNamespace(), id.getPath().substring(0, id.getPath().lastIndexOf('/')));
 		String cardId = id.getPath().substring(id.getPath().lastIndexOf('/') + 1);
 		return getSet(setId).getCard(cardId);
+	}
+
+	public CardSet getSet(ItemStack stack) {
+		if (stack.hasTag() && stack.getTag().contains("Card", NbtType.STRING)) {
+			return getSet(new Identifier(stack.getTag().getString("Card")));
+		}
+		return getSet(new Identifier(CardStock.MODID, "missingno"));
+	}
+
+	public Card getCard(ItemStack stack) {
+		if (stack.hasTag() && stack.getTag().contains("Card", NbtType.STRING)) {
+			return getCard(new Identifier(stack.getTag().getString("Card")));
+		}
+		return getCard(new Identifier(CardStock.MODID, "missingno/missingno"));
+	}
+
+	public CardSet getDefaultMissingnoSet() {
+		return defaultMissingnoSet;
+	}
+
+	public Card getDefaultMissingno() {
+		return defaultMissingno;
 	}
 
 	public void appendCards(List<ItemStack> toDisplay) {

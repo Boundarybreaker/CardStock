@@ -1,10 +1,8 @@
 package space.bbkr.cardstock.client.model;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.*;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
@@ -21,26 +19,39 @@ import java.util.function.Function;
 public class CardUnbakedModel implements UnbakedModel {
 	@Override
 	public Collection<Identifier> getModelDependencies() {
-		List<Identifier> models = new ArrayList<>();
+		Set<Identifier> models = new HashSet<>();
 		for (Identifier id : CardManager.INSTANCE.getSetIds()) {
 			CardSet set = CardManager.INSTANCE.getSet(id);
 			for (String name : set.getCards().keySet()) {
 				models.add(new ModelIdentifier(new Identifier(id.getNamespace(), "card/" + id.getPath() + '/' + name), "inventory"));
 			}
 		}
-		models.add(new ModelIdentifier(new Identifier(CardStock.MODID, "card_missingno"), "inventory"));
+		models.add(new ModelIdentifier(new Identifier(CardStock.MODID, "card/missingno/missingno"), "inventory"));
 		return models;
 	}
 
 	@Override
 	public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
+//		Set<SpriteIdentifier> sprites = new HashSet<>();
+//		for (Identifier id : getModelDependencies()) {
+//			sprites.addAll(unbakedModelGetter.apply(id).getTextureDependencies(unbakedModelGetter, unresolvedTextureReferences));
+//		}
+//		return sprites;
 		return Collections.emptySet();
-//		return Collections.singleton(new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier(CardStock.MODID, "item/card_missingno")));
 	}
 
 	@Nullable
 	@Override
 	public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
-		return new CardBakedModel();
+		Map<Identifier, BakedModel> models = new HashMap<>();
+		for (Identifier id : getModelDependencies()) {
+			System.out.println("Instructing to bake model " + id.toString());
+			BakedModel model = loader.getOrLoadModel(id).bake(loader, textureGetter, rotationContainer, id);
+//			BakedModel model = loader.bake(id, rotationContainer);
+			models.put(id, model);
+			System.out.println(models.get(id).getSprite());
+			System.out.println(models.get(id).getQuads(null, null, new Random()));
+		}
+		return new CardBakedModel(models);
 	}
 }

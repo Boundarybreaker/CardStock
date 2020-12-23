@@ -3,6 +3,7 @@
   "package": "space.bbkr.cardstock.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinModelLoader",
     "MixinPlayerManager"
   ],
   "client": [

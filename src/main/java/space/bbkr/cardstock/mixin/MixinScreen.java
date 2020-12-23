@@ -1,5 +1,7 @@
 package space.bbkr.cardstock.mixin;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
@@ -11,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 @Mixin(Screen.class)
 public class MixinScreen {
 	//the data.ifPresent lambda inside of Screen#renderTooltip
