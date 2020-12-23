@@ -17,17 +17,20 @@ import java.util.*;
 import java.util.function.Function;
 
 public class CardUnbakedModel implements UnbakedModel {
+	private final Map<Identifier, UnbakedModel> models;
+
+	public CardUnbakedModel(Map<Identifier, UnbakedModel> models) {
+		this.models = models;
+	}
+
 	@Override
 	public Collection<Identifier> getModelDependencies() {
-		Set<Identifier> models = new HashSet<>();
-		for (Identifier id : CardManager.INSTANCE.getSetIds()) {
-			CardSet set = CardManager.INSTANCE.getSet(id);
-			for (String name : set.getCards().keySet()) {
-				models.add(new ModelIdentifier(new Identifier(id.getNamespace(), "card/" + id.getPath() + '/' + name), "inventory"));
-			}
+		Set<Identifier> deps = new HashSet<>(models.keySet());
+		for (Identifier id : models.keySet()) {
+			UnbakedModel model = models.get(id);
+			deps.addAll(model.getModelDependencies());
 		}
-		models.add(new ModelIdentifier(new Identifier(CardStock.MODID, "card/missingno/missingno"), "inventory"));
-		return models;
+		return deps;
 	}
 
 	@Override
@@ -43,15 +46,10 @@ public class CardUnbakedModel implements UnbakedModel {
 	@Nullable
 	@Override
 	public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
-		Map<Identifier, BakedModel> models = new HashMap<>();
-		for (Identifier id : getModelDependencies()) {
-			System.out.println("Instructing to bake model " + id.toString());
-			BakedModel model = loader.getOrLoadModel(id).bake(loader, textureGetter, rotationContainer, id);
-//			BakedModel model = loader.bake(id, rotationContainer);
-			models.put(id, model);
-			System.out.println(models.get(id).getSprite());
-			System.out.println(models.get(id).getQuads(null, null, new Random()));
+		Map<Identifier, BakedModel> baked = new HashMap<>();
+		for (Identifier id : models.keySet()) {
+			baked.put(id, loader.bake(id, rotationContainer));
 		}
-		return new CardBakedModel(models);
+		return new CardBakedModel(baked);
 	}
 }

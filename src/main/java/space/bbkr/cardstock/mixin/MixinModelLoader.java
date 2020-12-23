@@ -25,11 +25,10 @@ import java.nio.charset.StandardCharsets;
 
 @Mixin(ModelLoader.class)
 public class MixinModelLoader {
-//	//lambda inside of upload() - modelsToBake.keySet().forEach()
-//	@Inject(method = "getOrLoadModel", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-//	private void getMyFuckingStacktrace(Identifier id, CallbackInfoReturnable<UnbakedModel> info, UnbakedModel model, Identifier newId, Exception e) {
-//		e.printStackTrace();
-//	}
+	@Inject(method = "getOrLoadModel", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	private void getMyFuckingStacktrace(Identifier id, CallbackInfoReturnable<UnbakedModel> info, UnbakedModel model, Identifier newId, Exception e) {
+		e.printStackTrace();
+	}
 
 	@Inject(method = "bake", at = @At("HEAD"))
 	private void getMyFuckingIdentifier(Identifier id, ModelBakeSettings settings, CallbackInfoReturnable<BakedModel> info) {

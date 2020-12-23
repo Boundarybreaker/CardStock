@@ -40,8 +40,6 @@ public class CardBakedModel implements BakedModel, FabricBakedModel {
 	}
 
 	private FabricBakedModel get() {
-//		System.out.println("ID: " + new ModelIdentifier(new Identifier(CardStock.MODID, "card/missingno/missingno"), "inventory").toString());
-//		System.out.println("found card: " + (wrapped != MANAGER.getMissingModel()));
 		return (FabricBakedModel) wrapped;
 	}
 
@@ -49,7 +47,7 @@ public class CardBakedModel implements BakedModel, FabricBakedModel {
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
 		if (stack.hasTag() && stack.getTag().contains("Card", NbtType.STRING)) {
 			Identifier cardId = new Identifier(stack.getTag().getString("Card"));
-			ModelIdentifier modelId = new ModelIdentifier(new Identifier(cardId.getNamespace(), "item/card/" + cardId.getPath()), "inventory");
+			ModelIdentifier modelId = new ModelIdentifier(new Identifier(cardId.getNamespace(), "card/" + cardId.getPath()), "inventory");
 			((FabricBakedModel) models.getOrDefault(modelId, MANAGER.getMissingModel())).emitItemQuads(stack, randomSupplier, context);
 		} else {
 			get().emitItemQuads(stack, randomSupplier, context);
@@ -58,7 +56,7 @@ public class CardBakedModel implements BakedModel, FabricBakedModel {
 
 	@Override
 	public boolean isVanillaAdapter() {
-		return get().isVanillaAdapter();
+		return false;
 	}
 
 	@Override
