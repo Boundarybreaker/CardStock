@@ -35,12 +35,11 @@ public class CardUnbakedModel implements UnbakedModel {
 
 	@Override
 	public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
-//		Set<SpriteIdentifier> sprites = new HashSet<>();
-//		for (Identifier id : getModelDependencies()) {
-//			sprites.addAll(unbakedModelGetter.apply(id).getTextureDependencies(unbakedModelGetter, unresolvedTextureReferences));
-//		}
-//		return sprites;
-		return Collections.emptySet();
+		Set<SpriteIdentifier> sprites = new HashSet<>();
+		for (Identifier id : getModelDependencies()) {
+			sprites.addAll(unbakedModelGetter.apply(id).getTextureDependencies(unbakedModelGetter, unresolvedTextureReferences));
+		}
+		return sprites;
 	}
 
 	@Nullable
