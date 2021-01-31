@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.JsonDataLoader;
@@ -149,18 +150,15 @@ public class CardManager extends JsonDataLoader implements IdentifiableResourceR
 				}
 			}
 		}
-		System.out.println("Card packet serialized!");
 		return buf;
 	}
 
 	public void sendPacket(ServerPlayerEntity player) {
 		PacketByteBuf buf = getBuf();
 		ServerPlayNetworking.send(player, CardStock.CARD_SYNC, buf);
-		System.out.println("Card packet sent from reload!");
 	}
 
 	public void recievePacket(PacketByteBuf buf) {
-		System.out.println("Card packet recieved!");
 		sets.clear();
 		int setCount = buf.readVarInt();
 		for (int i = 0; i < setCount; i++) {
@@ -183,6 +181,5 @@ public class CardManager extends JsonDataLoader implements IdentifiableResourceR
 			}
 			sets.put(id, new CardSet(emblem, cards));
 		}
-		System.out.println("Deserialized " + setCount + " cards");
 	}
 }
